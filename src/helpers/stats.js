@@ -20,7 +20,7 @@ async function imagesTotalViewsCounter() {
             }
         ]);
 
-        if (result  && result[0].viewsTotal !== undefined) {
+        if (result?.[0]?.viewsTotal !== undefined) {
             return result[0].viewsTotal;
         } else {
             return 0;
@@ -39,7 +39,7 @@ async function likeTotalCounter() {
             }
         }]);
 
-        if (result  && result[0].likesTotal !== undefined) {
+        if (result?.[0]?.viewsTotal !== undefined) {
             return result[0].likesTotal;
         } else {
             return 0;
