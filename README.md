@@ -1,4 +1,11 @@
 # PROYECTO FINAL
+## Clon de proyecto
+
+# Primera Prueba en SonarQube
+![PrimerScaner](/READMEFILES/PrimerTest.jpg)
+
+# Refactoring aplicado
+- 
 
 Nuestro proyecto es una aplicación web para compartir imágenes, comentarios y más.
 
