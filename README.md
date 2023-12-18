@@ -5,7 +5,11 @@
 ![PrimerScaner](/READMEFILES/PrimerTest.jpg)
 
 # Refactoring aplicado
-- 
+- Simplificar expresiones condicionales
+![PrimerRefactoring](/READMEFILES/refactoring1.png)
+- Refactorizando métodos propios a ctr class
+![SegundoRefactoring](/READMEFILES/refactoring2.png)
+
 
 Nuestro proyecto es una aplicación web para compartir imágenes, comentarios y más.
 
