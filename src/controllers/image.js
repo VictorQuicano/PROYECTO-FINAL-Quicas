@@ -14,18 +14,12 @@ ctrl.index =async (req , res)=>{
                         Image.findOne({ filename: { $regex: req.params.image_id } }),
                         Comment.find({ image_id: image._id })
     ]);
-
     if (image) {
         image.views += 1;
         viewModel.image = image;
         viewModel.comments = comments;
-
-        // No es necesario esperar aquí, ya que no hay operaciones asincrónicas después
         viewModel = await sidebar(viewModel);
-
-        // No es necesario esperar aquí, ya que no hay operaciones asincrónicas después
         await image.save();
-
         res.render('image', viewModel);
     } else {
         res.redirect('/');
