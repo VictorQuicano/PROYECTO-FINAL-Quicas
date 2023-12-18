@@ -9,18 +9,25 @@ const {Image , Comment} = require('../models/index')
 const ctrl = {};
 
 ctrl.index =async (req , res)=>{
-    let viewModel = {image:{} , comments:{}};
-    const image = await Image.findOne({filename : {$regex : req.params.image_id}});
-    if(image){
-        image.views += 1 ;
+    let viewModel = { image: {}, comments: {} };
+    const [image, comments] = await Promise.all([
+                        Image.findOne({ filename: { $regex: req.params.image_id } }),
+                        Comment.find({ image_id: image._id })
+    ]);
+
+    if (image) {
+        image.views += 1;
         viewModel.image = image;
-        await image.save();
-        const comments = await Comment.find({image_id: image._id});
         viewModel.comments = comments;
-        viewModel = await sidebar(viewModel)
+
+        // No es necesario esperar aquí, ya que no hay operaciones asincrónicas después
+        viewModel = await sidebar(viewModel);
+
+        // No es necesario esperar aquí, ya que no hay operaciones asincrónicas después
+        await image.save();
+
         res.render('image', viewModel);
-    }
-    else{
+    } else {
         res.redirect('/');
     }
 }
@@ -28,7 +35,7 @@ ctrl.index =async (req , res)=>{
 ctrl.create = async (req , res)=>{
     const  saveImage = async () =>{
         const imgUrl = randomNumber();
-        const images = await Image.find({filename : imgUrl});
+        const images = Image.find({filename : imgUrl});
         if(images.length > 0){
             saveImage();
         }else{
@@ -38,14 +45,6 @@ ctrl.create = async (req , res)=>{
     
             if(ext === '.png' || ext === '.jpg' || ext === '.jpeg' || ext === '.gif'){
                 await fs.rename(imageTempPath , targetPath);
-                const newImg = new Image({
-                    title :  req.body.title ,
-                    filename : imgUrl + ext ,
-                    description : req.body.description ,
-    
-                })
-                const imageSaved = await newImg.save();
-                res.redirect('/images/' + imgUrl)
             }
             else{
                 await fs.unlink(imageTempPath );
@@ -59,7 +58,7 @@ ctrl.create = async (req , res)=>{
 }
 
 ctrl.like = async (req , res)=>{
-    const image = await Image.findOne({filename : {$regex : req.params.image_id }}) 
+    const image = Image.findOne({filename : {$regex : req.params.image_id }}) 
     if(image){
         image.likes += 1 ;
         await image.save();
@@ -87,7 +86,7 @@ ctrl.comment = async (req , res)=>{
 }
 
 ctrl.remove = async (req , res)=>{
-    const image = await Image.findOne({filename : {$regex: req.params.image_id}})
+    const image = Image.findOne({filename : {$regex: req.params.image_id}})
     if(image){
         await fs.unlink(path.resolve('./src/public/upload/' + image.filename));
         await Comment.deleteOne({image_id : image._id});
